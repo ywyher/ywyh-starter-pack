@@ -1,6 +1,13 @@
+import "./globals.css";
+import Header from "@/components/header/header";
+import Script from "next/script";
+import { env } from "@/lib/env/server";
+import { Toaster } from "sonner";
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
+import { ThemeProvider } from "@/lib/providers/theme-provider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { ReactQueryProvider } from "@/lib/providers/react-query-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,11 +30,34 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      {env.ENV === 'DEVELOPMENT' && (
+        <head>
+          <Script
+            crossOrigin="anonymous"
+            src="//unpkg.com/react-scan/dist/auto.global.js"
+          />
+        </head>
+      )}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ReactQueryProvider>
+          <NuqsAdapter>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Header />
+              <main className="container mx-auto">
+                {children}
+              </main>
+              <Toaster theme="dark" />
+            </ThemeProvider>
+          </NuqsAdapter>
+        </ReactQueryProvider>
       </body>
     </html>
   );
