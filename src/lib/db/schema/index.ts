@@ -1,13 +1,20 @@
 import { InferSelectModel } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, pgEnum } from "drizzle-orm/pg-core";
 			
+export const roleEnum = pgEnum('role', [
+  'admin',
+  'user'
+])
+
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text('name').notNull().unique(),
   email: text('email').notNull().unique(),
   emailVerified: boolean('email_verified').notNull(),
-  image: text('image').default("pfp.png").notNull(),
-  isAdmin: boolean('isAdmin').default(false),
+  image: text('image').default("default").notNull(),
+  banner: text('banner'),
+  isAnonymous: boolean('is_anonymous').default(false),
+  roles: roleEnum('roles').array().default(["user"]).notNull(),
   createdAt: timestamp('created_at').notNull(),
   updatedAt: timestamp('updated_at').notNull()
 });

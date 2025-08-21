@@ -6,6 +6,7 @@ import { betterAuth } from "better-auth";
 import { APIError } from 'better-auth/api'
 import { nextCookies } from "better-auth/next-js";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { anonymous } from "better-auth/plugins/anonymous";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -45,7 +46,26 @@ export const auth = betterAuth({
       }
     },
   },
+  user: {
+    additionalFields: {
+      banner: {
+        type: 'string',
+        required: false,
+      },
+      isAnonymous: {
+        type: 'boolean',
+        required: false
+      },
+    }
+  },
   plugins: [
+    anonymous({
+      generateName: () => {
+        const randomSuffix = Math.random().toString(36).substring(2, 8); // generates random alphanumeric string
+        return `anon-${randomSuffix}`;
+      },
+      disableDeleteAnonymousUser: false,
+    }),
     emailOTP({ 
       async sendVerificationOTP({ email, otp, type }) { 
         if (type === "email-verification") {

@@ -14,6 +14,7 @@ import { AuthIdentifier, AuthPort } from "@/components/auth/auth";
 import { Dispatch, Fragment, SetStateAction, useState } from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp"
+import { userQueries } from "@/lib/queries/user";
 
 export const verifySchema = z.object({
     otp: z.string().min(6, "OTP is required."),
@@ -85,6 +86,7 @@ export default function Verify({
         }
 
         queryClient.clear()
+        queryClient.invalidateQueries({ queryKey: userQueries.session._def })
         setOpen(false)
         setPort('check')
     }

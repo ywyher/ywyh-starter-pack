@@ -5,9 +5,5 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function getFileUrl(image: string | null) {
-  if(image == 'pfp.png') {
-    return "/images/pfp.png"
-  }
-  return image || "";
-}
+export const sleep = (ms: number): Promise<void> => 
+  new Promise(resolve => setTimeout(resolve, ms));

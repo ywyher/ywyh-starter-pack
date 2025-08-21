@@ -1,9 +1,9 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { getFileUrl } from "@/lib/utils/file";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Pfp({
-  image = "/images/pfp.png",
+  image = "pfp.png",
   className,
   onClick
 }: {
@@ -21,11 +21,7 @@ export default function Pfp({
       )}
       onClick={onClick}
     >
-      <AvatarImage 
-        className="object-cover" 
-        src={getFileUrl(image)} 
-        alt="Profile picture" 
-      />
+      <AvatarImage className="object-cover" src={getFileUrl(image)} alt="Profile picture" />
       <AvatarFallback>pfp</AvatarFallback>
     </Avatar>
   );
