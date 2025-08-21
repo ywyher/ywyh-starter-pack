@@ -5,14 +5,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { generateFileName } from "@/lib/utils/file";
 
-interface UploadedFile {
-  key: string;    // Unique identifier
-  url: string;    // Public URL of the uploaded file
-  name: string;   // Original filename
-  size: number;   // File size in bytes
-  type: string;   // MIME type
-}
-
 const s3 = new S3Client({
   region: "auto",
   endpoint: `https://${env.S3_ACCOUNT_ID}.r2.cloudflarestorage.com`,

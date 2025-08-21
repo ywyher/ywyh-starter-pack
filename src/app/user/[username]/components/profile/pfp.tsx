@@ -5,7 +5,6 @@ import UploadOverlay from "@/app/user/[username]/components/profile/upload-overl
 import useProfileFiles from "@/lib/hooks/use-profile-files";
 import { User } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
-import { getFileUrl } from "@/lib/utils/file";
 
 type UserPfpProps = {
   userId: User['id']
@@ -51,7 +50,7 @@ export default function ProfilePfp({ userId, image, editable = false }: UserPfpP
         />
         
         <Pfp 
-          image={getFileUrl(image)}
+          image={image}
           className={cn(
             "object-cover rounded-sm border-2 border-primary/20",
             "w-full h-full transition-opacity duration-200",

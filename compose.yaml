@@ -2,14 +2,14 @@ version: '3.8'
 services:
   postgres:
     image: postgres:latest
-    container_name: amir
+    container_name: ywyh-starter-pack
     ports:
       - "5432:5432"
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: amir
+      POSTGRES_DB: ywyh-starter-pack
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:

@@ -40,8 +40,9 @@ export const auth = betterAuth({
 
         return;
       } catch (error) {
+        const msg = error instanceof Error ? error.message : "Failed to send reset password email"
         throw new APIError("BAD_GATEWAY", {
-          message: "Failed to send reset password email"
+          message: msg
         });
       }
     },

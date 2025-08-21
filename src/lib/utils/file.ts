@@ -1,3 +1,4 @@
+import 'dotenv'
 import Crypto from "crypto";
 import { env } from "@/lib/env/client";
 
@@ -19,7 +20,7 @@ export function isValidURL(url: string) {
   try {
     new URL(url);
     return true;
-  } catch (_) {
+  } catch {
     return false;
   }
 }
@@ -138,7 +139,7 @@ export function extractFilenameFromUrl(url: string, withoutExtension = false) {
         }
         
         return filename;
-    } catch (error) {
+    } catch {
         // Fallback method for malformed URLs
         try {
             const parts = url.split('/');
@@ -150,7 +151,7 @@ export function extractFilenameFromUrl(url: string, withoutExtension = false) {
             }
             
             return filename || null;
-        } catch (fallbackError) {
+        } catch {
             return null;
         }
     }
