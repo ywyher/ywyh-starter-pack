@@ -1,5 +1,5 @@
-import type { User } from "@bettermelon/database";
 import ProfilePfp from "@/app/user/[username]/components/profile/pfp";
+import type { User } from "@/lib/db/schema";
 
 interface ProfileHeaderProps {
   profileUser: User;

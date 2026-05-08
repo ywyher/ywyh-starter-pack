@@ -1,4 +1,3 @@
-import type { User } from "@bettermelon/database";
 import { useQueryClient } from "@tanstack/react-query";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -16,6 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import type { User } from "@/lib/db/schema";
 import { adminQueries } from "@/lib/queries/admin";
 
 export default function DeleteUser({

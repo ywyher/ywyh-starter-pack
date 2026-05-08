@@ -1,10 +1,10 @@
 "use client";
-import type { User } from "@bettermelon/database";
 import type { Column, ColumnDef, Row } from "@tanstack/react-table";
 import UsersTableAcitons from "@/app/admin/users/components/table-actions";
 import { Checkbox } from "@/components/ui/checkbox";
 import DataTableCell from "@/components/ui/data-table-cell";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import type { User } from "@/lib/db/schema";
 
 const userColumns = [
   { value: "id", label: "ID" },

@@ -1,4 +1,3 @@
-import type { User } from "@bettermelon/database";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ShieldCheckIcon } from "lucide-react";
 import { useState } from "react";
@@ -11,6 +10,7 @@ import LoadingButton from "@/components/loading-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { authClient } from "@/lib/auth-client";
+import type { User } from "@/lib/db/schema";
 import { passwordSchema } from "@/types/auth";
 
 const setPasswordSchmea = z.object({

@@ -1,4 +1,3 @@
-import type { User } from "@bettermelon/database";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { UserPen } from "lucide-react";
@@ -13,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { authClient } from "@/lib/auth-client";
 import { roles } from "@/lib/constants/auth";
+import type { User } from "@/lib/db/schema";
 import { adminQueries } from "@/lib/queries/admin";
 
 const setRoleSchema = z.object({

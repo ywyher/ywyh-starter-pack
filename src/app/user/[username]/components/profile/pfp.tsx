@@ -1,9 +1,9 @@
-import type { User } from "@bettermelon/database";
 import { useOrientation } from "@uidotdev/usehooks";
 import UploadOverlay from "@/app/user/[username]/components/profile/upload-overlay";
 import Cropper from "@/components/cropper";
 import DialogWrapper from "@/components/dialog-wrapper";
 import Pfp from "@/components/pfp";
+import type { User } from "@/lib/db/schema";
 import useProfileFiles from "@/lib/hooks/use-profile-files";
 import { cn } from "@/lib/utils";
 
