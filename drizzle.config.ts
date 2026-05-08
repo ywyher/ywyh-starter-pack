@@ -1,15 +1,21 @@
-import "dotenv/config";
-import { type Config, defineConfig } from "drizzle-kit";
-import { env } from "@/lib/env/server";
+import * as dotenv from 'dotenv';
+import { defineConfig } from 'drizzle-kit';
+import type { Config } from 'drizzle-kit';
+
+const isProdEnv = process.env.NODE_ENV === 'production';
+dotenv.config({ path: isProdEnv ? '.env.production' : '.env.development' });
 
 export default defineConfig({
-  out: "./drizzle",
-  schema: "./src/lib/db/schema/index.ts",
-  dialect: "postgresql",
+  out: './drizzle',
+  schema: '../database/src/schema/index.ts',
+  dialect: 'postgresql',
   dbCredentials: {
-    url: env.DATABASE_URL,
+    url: process.env.DATABASE_URL!,
   },
-  // This is important for handling custom types like enums
+  migrations: {
+    table: '__drizzle_migrations',
+    schema: 'public',
+  },
   verbose: true,
-  strict: true,
+  strict: true
 }) satisfies Config;

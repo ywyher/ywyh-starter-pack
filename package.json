@@ -8,9 +8,17 @@
     "start": "next start",
     "lint": "biome check . --max-diagnostics=1000",
     "lint:fix": "biome check . --write --max-diagnostics=1000",
+    "prepare": "husky",
+
+    "generate": "bunx drizzle-kit generate",
+    "production:migrate": "NODE_ENV=production bunx drizzle-kit migrate",
+    "migrate": "bunx drizzle-kit migrate",
+    "production:push": "NODE_ENV=production bunx drizzle-kit push",
     "push": "bunx drizzle-kit push",
-    "studio": "bunx drizzle-kit studio",
-    "prepare": "husky"
+    "production:studio": "NODE_ENV=production bunx drizzle-kit studio",
+    "seed:build": "bun build ./src/scripts/seed.ts --outdir ./dist --target bun",
+    "seed": "bun ./src/scripts/seed.ts",
+    "studio": "bunx drizzle-kit studio"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1045.0",
