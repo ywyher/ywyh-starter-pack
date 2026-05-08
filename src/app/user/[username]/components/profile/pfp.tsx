@@ -1,8 +1,9 @@
+import type { User } from "@bettermelon/database";
+import { useOrientation } from "@uidotdev/usehooks";
 import UploadOverlay from "@/app/user/[username]/components/profile/upload-overlay";
 import Cropper from "@/components/cropper";
 import DialogWrapper from "@/components/dialog-wrapper";
 import Pfp from "@/components/pfp";
-import type { User } from "@/lib/db/schema";
 import useProfileFiles from "@/lib/hooks/use-profile-files";
 import { cn } from "@/lib/utils";
 
@@ -33,18 +34,22 @@ export default function ProfilePfp({
     successMessage: "Lookin good :)",
   });
 
+  const orientation = useOrientation();
+
   return (
     <>
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: shut up */}
+      {/* biome-ignore lint/a11y/useSemanticElements: no */}
       <div
+        role="button"
+        tabIndex={0}
         className={cn(
           "relative w-full h-full group",
-          "w-50 h-50 z-20",
+          "w-44 md:w-50 h-44 md:h-50 z-20",
           editable && "cursor-pointer",
           isUploading && "cursor-wait",
         )}
         onClick={editable ? triggerFileInput : undefined}
-        onKeyUp={editable ? triggerFileInput : undefined}
+        onKeyDown={editable ? triggerFileInput : undefined}
       >
         <input
           type="file"
@@ -73,15 +78,19 @@ export default function ProfilePfp({
         setOpen={handleDialogClose}
         title="Crop Your Image"
         description="Adjust your profile picture by cropping it to the perfect size"
-        className="min-w-2xl"
-        handleOnly={true}
+        headerClassName="sm:p-2 flex-col justify-between md:justify-start items-start"
+        className="max-h-screen sm:h-screen md:h-fit"
+        handleOnly
       >
         {previewUrl && (
           <Cropper
             image={previewUrl}
             onCrop={handleImage}
             onCancel={handleDialogClose}
-            className="pt-4 md:pt-0"
+            className={cn(
+              "pt-4 md:pt-0",
+              orientation.type === "landscape-primary" && "px-10 md:px-0",
+            )}
           />
         )}
       </DialogWrapper>

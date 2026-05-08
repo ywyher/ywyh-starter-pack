@@ -28,13 +28,14 @@ export default function AnonymousLinkAccountAlert({
       return;
     }
 
-    queryClient.invalidateQueries({ queryKey: userQueries.session._def });
+    await queryClient.invalidateQueries({ queryKey: userQueries.session._def });
+    queryClient.clear();
     toast.success(message);
     setIsLoading(false);
   };
 
   return (
-    <Alert className="flex justify-between items-center">
+    <Alert className="flex flex-col gap-3 items-center bg-secondary w-full">
       <div className="flex flex-row gap-1 items-center">
         <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
         <div className="flex flex-col">
@@ -50,7 +51,7 @@ export default function AnonymousLinkAccountAlert({
         variant="destructive"
         isLoading={isLoading}
         onClick={handleAccountDeletion}
-        className="py-3 w-fit h-full"
+        className="w-full h-fit"
       >
         Delete
       </LoadingButton>

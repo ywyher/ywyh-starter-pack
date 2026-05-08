@@ -1,3 +1,4 @@
+import { useOrientation } from "@uidotdev/usehooks";
 import UploadOverlay from "@/app/user/[username]/components/profile/upload-overlay";
 import Cropper from "@/components/cropper";
 import DialogWrapper from "@/components/dialog-wrapper";
@@ -35,19 +36,23 @@ export default function ProfileBanner({
     successMessage: "Banner updated successfully!",
   });
 
+  const orientation = useOrientation();
+
   return (
     <>
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: shut up */}
+      {/* biome-ignore lint/a11y/useSemanticElements: no */}
       <div
+        role="button"
+        tabIndex={0}
         className={cn(
           "group z-10 absolute top-0 left-0",
-          "w-screen h-[var(--banner-height-small)] md:h-[var(--banner-height)]",
+          "w-full h-[var(--banner-height-small)] md:h-[var(--banner-height)]",
           editable && "cursor-pointer",
           isUploading && "cursor-wait",
           className,
         )}
         onClick={editable ? triggerFileInput : undefined}
-        onKeyUp={editable ? triggerFileInput : undefined}
+        onKeyDown={editable ? triggerFileInput : undefined}
       >
         <input
           type="file"
@@ -57,10 +62,9 @@ export default function ProfileBanner({
           onChange={handleFileChange}
           disabled={isUploading}
         />
-
         <div
           style={{
-            backgroundImage: `url("${getFileUrl(banner)}")`,
+            backgroundImage: banner ? `url("${getFileUrl(banner)}")` : "",
             backgroundPosition: "50% 35%",
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
@@ -75,7 +79,7 @@ export default function ProfileBanner({
         <div
           className="
             absolute inset-0 
-            bg-gradient-to-b 
+            bg-linear-to-b
             from-background/20 
             via-background/40 
             to-background
@@ -89,16 +93,20 @@ export default function ProfileBanner({
         setOpen={handleDialogClose}
         title="Crop Your Banner"
         description="Adjust your banner by cropping it to the perfect size"
-        className="min-w-2xl"
-        handleOnly={true}
+        headerClassName="sm:p-2 flex-row md:flex-col justify-between md:justify-start items-center md:items-start"
+        className="max-h-screen sm:h-screen md:h-fit"
+        handleOnly
       >
         {previewUrl && (
           <Cropper
             image={previewUrl}
             onCrop={handleImage}
             onCancel={handleDialogClose}
-            className="pt-4 md:pt-0"
             cropType="banner"
+            className={cn(
+              "pt-4 md:pt-0",
+              orientation.type === "landscape-primary" && "px-10 md:px-0",
+            )}
           />
         )}
       </DialogWrapper>

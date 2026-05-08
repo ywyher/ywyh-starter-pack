@@ -35,9 +35,9 @@ export default function ProfileCardSkeleton() {
         {/* Profile Content Container */}
         <div
           className="
-          h-full w-full container mx-auto
-          flex justify-between items-end gap-10 bg-transparent
-          pb-10 z-20
+					h-full w-full container mx-auto px-4
+					flex flex-col md:gap-10 md:flex-row justify-end md:justify-between bg-transparent
+					pb-5 md:pb-10 z-20 gap-4
         "
         >
           {/* Profile Header Skeleton */}
@@ -51,21 +51,32 @@ export default function ProfileCardSkeleton() {
             "
             />
 
-            {/* Username Skeleton */}
-            <div className="z-20">
-              <div
-                className="
-                h-8 w-32 bg-muted animate-pulse rounded
-                mb-1
-              "
-              />
+            <div className="flex flex-col gap-2">
+              {/* Display Name Skeleton */}
+              <div className="z-20">
+                <div
+                  className="
+									h-8 w-32 bg-muted animate-pulse rounded
+									mb-1
+								"
+                />
+              </div>
+              {/* Username Skeleton */}
+              <div className="z-20">
+                <div
+                  className="
+									h-8 w-32 bg-muted animate-pulse rounded
+									mb-1
+								"
+                />
+              </div>
             </div>
           </div>
 
           {/* Profile Actions Skeleton */}
           <div
             className="
-            flex flex-col gap-3
+            flex flex-row md:flex-col gap-3 justify-end
             z-20
           "
           >

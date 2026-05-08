@@ -1,14 +1,18 @@
 import { createQueryKeys } from "@lukemorales/query-key-factory";
 import { useQuery } from "@tanstack/react-query";
 import { getSession } from "@/lib/auth-client";
-import type { User } from "@/lib/db/schema";
+import type { Session, User } from "@/lib/db/schema";
 
 export const userQueries = createQueryKeys("user", {
   session: () => ({
     queryKey: ["session"],
     queryFn: async () => {
-      const data = await getSession();
-      return (data.data?.user as User) || null;
+      const { data, error } = await getSession();
+      if (error) throw new Error(error.message);
+      return {
+        session: data?.session as Session,
+        user: data?.user as User,
+      };
     },
   }),
 });

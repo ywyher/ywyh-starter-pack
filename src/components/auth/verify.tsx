@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { type Dispatch, Fragment, type SetStateAction, useState } from "react";
+import React, { type Dispatch, type SetStateAction, useState } from "react";
 import { type FieldErrors, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -26,6 +26,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { useIsSmall } from "@/lib/hooks/use-media-query";
 import { userQueries } from "@/lib/queries/user";
+// import { identifyUser } from "@/lib/umami";
 
 export const verifySchema = z.object({
   otp: z.string().min(6, "OTP is required."),
@@ -96,6 +97,10 @@ export default function Verify({
       return;
     }
 
+    // identifyUser({
+    // 	email: email,
+    // 	username: data.user.name,
+    // });
     queryClient.clear();
     queryClient.invalidateQueries({ queryKey: userQueries.session._def });
     setOpen(false);
@@ -155,17 +160,17 @@ export default function Verify({
                     <InputOTPGroup className="flex flex-row gap-3">
                       {[...Array(6)].map((_, index) =>
                         index === 2 ? (
-                          // biome-ignore lint/suspicious/noArrayIndexKey: shutup
-                          <Fragment key={index}>
+                          // biome-ignore lint/suspicious/noArrayIndexKey: static elements
+                          <React.Fragment key={index}>
                             <InputOTPSlot
                               index={index}
                               className="w-11 h-12 text-xl text-center border rounded-md focus:ring-2 focus:ring-primary transition-all"
                             />
                             <InputOTPSeparator className="mx-2 text-lg" />
-                          </Fragment>
+                          </React.Fragment>
                         ) : (
                           <InputOTPSlot
-                            // biome-ignore lint/suspicious/noArrayIndexKey: shutup
+                            // biome-ignore lint/suspicious/noArrayIndexKey: static elements
                             key={index}
                             index={index}
                             className="w-11 h-12 text-xl text-center border rounded-md focus:ring-2 focus:ring-primary transition-all"

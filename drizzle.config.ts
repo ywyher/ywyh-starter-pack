@@ -7,7 +7,7 @@ dotenv.config({ path: isProdEnv ? ".env.production" : ".env.development" });
 
 export default defineConfig({
   out: "./drizzle",
-  schema: "../database/src/schema/index.ts",
+  schema: "./src/lib/db/schema/index.ts",
   dialect: "postgresql",
   dbCredentials: {
     // biome-ignore lint/style/noNonNullAssertion: temporary

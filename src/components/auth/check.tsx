@@ -20,7 +20,11 @@ import { useIsSmall } from "@/lib/hooks/use-media-query";
 import { emailRegex, identifierSchema, usernameRegex } from "@/types/auth";
 
 export const checkSchema = z.object({
-  identifier: identifierSchema,
+  identifier: identifierSchema
+    .transform((val) => val.toLowerCase())
+    .refine((val) => !val.includes(" "), {
+      message: "Username cannot contain spaces",
+    }),
 });
 
 type FormValues = z.infer<typeof checkSchema>;
@@ -59,6 +63,7 @@ export default function Check({
 
     if (!identifier) {
       toast.error("Use email or username");
+      setIsLoading(false);
       return;
     }
 
@@ -67,15 +72,7 @@ export default function Check({
     if (exists && verified) {
       setPort("login");
     } else if (!exists) {
-      if (identifier === "username") {
-        toast.error("Registration requires an email", {
-          description: "Username can be used to login after registration",
-        });
-        setIsLoading(false);
-        return;
-      } else {
-        setPort("register");
-      }
+      setPort("register");
     } else if (exists && !verified) {
       setPort("login");
     }

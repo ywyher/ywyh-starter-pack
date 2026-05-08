@@ -4,8 +4,8 @@ export default function ProfileTabs() {
   return (
     <div
       className="
-      w-screen relative left-1/2 -translate-x-1/2
-      bg-secondary
+      w-screen relative left-1/2 -translate-x-1/2 bg-secondary
+			-mx-2
     "
     >
       <div

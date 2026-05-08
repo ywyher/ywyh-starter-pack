@@ -21,10 +21,11 @@ import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { useIsSmall } from "@/lib/hooks/use-media-query";
+// import { identifyUser } from "@/lib/umami";
 import { identifierSchema, passwordSchema } from "@/types/auth";
 
 export const loginSchema = z.object({
-  identifier: identifierSchema,
+  identifier: identifierSchema.transform((val) => val.toLowerCase()),
   password: passwordSchema,
 });
 
@@ -71,10 +72,10 @@ export default function Login({
       return;
     }
 
-    try {
-      const isAccountVerified = await getIsAccountVerified(email);
-      const shouldVerifyEmail = await getShouldVerifyEmail();
+    const isAccountVerified = await getIsAccountVerified(email);
+    const shouldVerifyEmail = await getShouldVerifyEmail();
 
+    try {
       if (isAccountVerified || !shouldVerifyEmail) {
         const result = await authClient.signIn.email({
           email: email,
@@ -90,6 +91,11 @@ export default function Login({
         queryClient.clear();
         router.refresh();
         toast.success("Logged in successfully");
+
+        // identifyUser({
+        // 	email: email,
+        // 	username: result.data.user.name,
+        // });
         setIsLoading(false);
         setOpen(false);
         setPort("check");
@@ -110,8 +116,8 @@ export default function Login({
       }
     } catch (error) {
       const msg = error instanceof Error ? error.message : "Failed";
-      toast.error(msg);
       setIsLoading(false);
+      toast.error(msg);
     }
   };
 
@@ -179,7 +185,7 @@ export default function Login({
           onClick={() => onForgetPassword()}
           type="button"
         >
-          Forget password ?
+          Forgot password ?
         </Button>
         <LoadingButton isLoading={isLoading} className="w-full mt-4">
           Login

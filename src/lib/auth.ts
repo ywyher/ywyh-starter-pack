@@ -2,11 +2,12 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
-import { anonymous } from "better-auth/plugins/anonymous";
-import { emailOTP } from "better-auth/plugins/email-otp";
+import { admin, anonymous, emailOTP } from "better-auth/plugins";
+import { defaultAc } from "better-auth/plugins/admin/access";
 import db from "@/lib/db";
 import * as schema from "@/lib/db/schema/index";
 import { env } from "@/lib/env/server";
+import { admin as adminRole, moderator, user } from "@/lib/permission";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -49,17 +50,46 @@ export const auth = betterAuth({
   },
   user: {
     additionalFields: {
+      role: {
+        type: ["user", "moderator", "admin"],
+        required: false,
+      },
       banner: {
         type: "string",
         required: false,
+      },
+      displayName: {
+        type: "string",
+        required: true,
       },
       isAnonymous: {
         type: "boolean",
         required: false,
       },
+      banned: {
+        type: "boolean",
+        required: false,
+      },
+      banReason: {
+        type: "string",
+        required: false,
+      },
+      banExpires: {
+        type: "date",
+        required: false,
+      },
     },
   },
   plugins: [
+    admin({
+      defaultAc,
+      adminRoles: ["admin", "moderator"],
+      roles: {
+        admin: adminRole,
+        user,
+        moderator,
+      },
+    }),
     anonymous({
       generateName: () => {
         const randomSuffix = Math.random().toString(36).substring(2, 8); // generates random alphanumeric string

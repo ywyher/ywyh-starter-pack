@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 export default function ProfileTabsLinks() {
   const pathname = usePathname();
   const params = useParams();
-  const username = String(params.username);
+  const username = decodeURIComponent(String(params.username).toLowerCase());
 
   const links = [{ label: "Overview", href: `/user/${username}` }];
 
@@ -25,10 +25,15 @@ export default function ProfileTabsLinks() {
 
   return (
     <>
-      {links.map((l) => {
+      {links.map((l, idx) => {
         const isActive = isLinkActive(l.href);
         return (
-          <Link key={`${l.href}`} href={l.href} className={"transition-all"}>
+          <Link
+            // biome-ignore lint/suspicious/noArrayIndexKey: shut up
+            key={`${l.label}-${idx}`}
+            href={l.href}
+            className={"transition-all"}
+          >
             <Button
               variant="ghost"
               className={cn(

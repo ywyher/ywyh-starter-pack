@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 
 export default function AnonAlert({ className = "" }: { className?: string }) {
   const params = useParams();
-  const username = String(params.username);
+  const username = decodeURIComponent(String(params.username).toLowerCase());
 
   const setIsAuthDialogOpen = useAuthStore(
     (state) => state.setIsAuthDialogOpen,
@@ -46,7 +46,7 @@ export default function AnonAlert({ className = "" }: { className?: string }) {
       )}
     >
       <div className="flex items-start space-x-2">
-        <TriangleAlert className="h-4 w-4 mt-0.5" />
+        <TriangleAlert className="h-10 md:h-4 w-10 md:w-4 md:mt-0.5" />
         <div>
           <AlertTitle className="font-bold">
             You&apos;re browsing as a guest
@@ -69,7 +69,7 @@ export default function AnonAlert({ className = "" }: { className?: string }) {
         "
       >
         <ShieldAlert />
-        Sign In
+        Register
       </Button>
     </Alert>
   );

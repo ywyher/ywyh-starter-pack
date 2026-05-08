@@ -1,12 +1,15 @@
 import {
+  adminClient,
   anonymousClient,
   emailOTPClient,
   genericOAuthClient,
   inferAdditionalFields,
 } from "better-auth/client/plugins";
+import { defaultAc } from "better-auth/plugins/admin/access";
 import { createAuthClient } from "better-auth/react";
 import type { auth } from "@/lib/auth";
 import { env } from "@/lib/env/client";
+import { admin, moderator, user } from "@/lib/permission";
 
 export const authClient = createAuthClient({
   baseURL: env.NEXT_PUBLIC_APP_URL,
@@ -14,6 +17,14 @@ export const authClient = createAuthClient({
     genericOAuthClient(),
     emailOTPClient(),
     anonymousClient(),
+    adminClient({
+      defaultAc,
+      roles: {
+        admin,
+        user,
+        moderator,
+      },
+    }),
     inferAdditionalFields<typeof auth>(),
   ],
 });

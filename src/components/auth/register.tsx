@@ -8,22 +8,21 @@ import { type FieldErrors, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { getShouldVerifyEmail } from "@/components/auth/actions";
-import type { AuthPort } from "@/components/auth/auth";
+import type { AuthIdentifier, AuthPort } from "@/components/auth/auth";
+import { FormField } from "@/components/form/form-field";
 import { PasswordInput } from "@/components/form/password-input";
+import { TextInput } from "@/components/form/text-input";
 import LoadingButton from "@/components/loading-button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { authClient } from "@/lib/auth-client";
+import { getUser } from "@/lib/db/queries";
 import { useIsSmall } from "@/lib/hooks/use-media-query";
 import { emailSchema, passwordSchema, usernameSchema } from "@/types/auth";
 
 export const registerSchema = z.object({
+  displayName: z
+    .string()
+    .min(1, "Display name should at least contain 1 character."),
   username: usernameSchema,
   email: emailSchema,
   password: passwordSchema,
@@ -35,14 +34,16 @@ type RegisterProps = {
   setPort: Dispatch<SetStateAction<AuthPort>>;
   setPassword: Dispatch<SetStateAction<string>>;
   setOpen: (isAuthDialogOpen: boolean) => void;
-  email: string;
+  identifierValue: string;
+  identifier: AuthIdentifier;
 };
 
 export default function Register({
   setPort,
-  email,
   setPassword,
   setOpen,
+  identifier,
+  identifierValue,
 }: RegisterProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const queryClient = useQueryClient();
@@ -52,61 +53,69 @@ export default function Register({
   const form = useForm<FormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      email: email || "",
+      email: identifier === "email" ? identifierValue : "",
       password: "",
-      username: "",
+      username: identifier === "username" ? identifierValue : "",
+      displayName: identifier === "username" ? identifierValue : "",
     },
   });
 
-  // formData.email are mostly undfined so we use it as fallback only
+  // formData.email/username are undfined if they are the identifier so we use it as fallback only
   const onSubmit = async (formData: FormValues) => {
     setIsLoading(true);
-    const result = await authClient.signUp.email({
-      email: email || formData.email,
-      password: formData.password,
-      name: formData.username,
-    });
 
-    if (result.error) {
-      toast.error(result.error.message);
-      setIsLoading(false);
-      return;
-    }
-
-    const shouldVerifyEmail = await getShouldVerifyEmail();
-
-    if (shouldVerifyEmail) {
-      const { error } = await authClient.emailOtp.sendVerificationOtp({
-        email: email || formData.email,
-        type: "email-verification",
+    try {
+      const userByName = await getUser({
+        field: "name",
+        value: formData.username,
       });
+      if (userByName.user) throw new Error("Username is already used!");
 
-      if (error) {
-        toast.error(error.message);
-        setIsLoading(false);
-        return;
-      }
-
-      setPassword(formData.password);
-      setPort("verify");
-    } else {
-      const result = await authClient.signIn.email({
-        email: email || formData.email,
+      const result = await authClient.signUp.email({
+        email: identifier === "email" ? identifierValue : formData.email,
         password: formData.password,
+        name: identifier === "username" ? identifierValue : formData.username,
+        displayName: formData.displayName,
       });
 
-      if (result.error) {
-        toast.error(result.error.message);
-        setIsLoading(false);
-        return;
-      }
+      if (result.error) throw new Error(result.error.message);
 
-      queryClient.clear();
-      router.refresh();
-      toast.success("Logged in successfully");
+      const shouldVerifyEmail = await getShouldVerifyEmail();
+
+      if (shouldVerifyEmail) {
+        const { error } = await authClient.emailOtp.sendVerificationOtp({
+          email: identifier === "email" ? identifierValue : formData.email,
+          type: "email-verification",
+        });
+
+        if (error) throw new Error(error.message);
+
+        setPassword(formData.password);
+        setPort("verify");
+      } else {
+        const result = await authClient.signIn.email({
+          email: identifier === "email" ? identifierValue : formData.email,
+          password: formData.password,
+        });
+
+        if (result.error) throw new Error(result.error.message);
+
+        queryClient.clear();
+        router.refresh();
+        toast.success("Account registered successfully");
+        // identifyUser({
+        // 	email: identifier === "email" ? identifierValue : formData.email,
+        // 	username: identifier === "username" ? identifierValue : formData.username,
+        // });
+        setOpen(false);
+        setPort("check");
+      }
+    } catch (error) {
+      const msg =
+        error instanceof Error ? error.message : "Failed to create user";
+      toast.error(msg);
+    } finally {
       setIsLoading(false);
-      setOpen(false);
-      setPort("check");
     }
   };
 
@@ -124,42 +133,32 @@ export default function Register({
       <form onSubmit={form.handleSubmit(onSubmit, onError)}>
         <div className="flex flex-col gap-4">
           <FormField
-            control={form.control}
+            form={form}
+            label="Username"
             name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+            disabled={identifier === "username"}
+          >
+            <TextInput />
+          </FormField>
           <FormField
-            control={form.control}
+            form={form}
+            label="Display name"
+            name="displayName"
+            description="You can use special chracters and emojis."
+          >
+            <TextInput />
+          </FormField>
+          <FormField
+            form={form}
+            label="Email"
             name="email"
-            disabled
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input disabled placeholder="m@example.com" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <PasswordInput {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+            disabled={identifier === "email"}
+          >
+            <TextInput />
+          </FormField>
+          <FormField form={form} label="Password" name="password">
+            <PasswordInput />
+          </FormField>
         </div>
         <LoadingButton isLoading={isLoading} className="w-full mt-4">
           Register

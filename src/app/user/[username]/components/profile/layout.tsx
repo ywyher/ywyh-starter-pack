@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { toast } from "sonner";
 import ProfileActions from "@/app/user/[username]/components/profile/actions";
 import ProfileBanner from "@/app/user/[username]/components/profile/banner";
@@ -14,14 +14,15 @@ import { profileQueries } from "@/lib/queries/profile";
 export default function ProfileLayout() {
   const router = useRouter();
   const params = useParams();
-  const username = String(params.username);
+  const username = decodeURIComponent(String(params.username).toLowerCase());
+  const redirectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { data, isLoading } = useQuery({
     ...profileQueries.profile({ username }),
     enabled: !!username,
   });
 
-  const isOwner = useMemo(() => {
+  const canEdit = useMemo(() => {
     if (!data?.currentUser || !username) return false;
     return (
       data.currentUser?.name === username &&
@@ -44,10 +45,6 @@ export default function ProfileLayout() {
   }, [data]);
 
   useEffect(() => {
-    console.log(`data`, data);
-  }, [data]);
-
-  useEffect(() => {
     if (profilenotFound) {
       const userExists = data?.currentUser;
       const destination = userExists ? "your account" : "home page";
@@ -58,11 +55,26 @@ export default function ProfileLayout() {
         duration: 10000,
       });
 
-      setTimeout(() => {
+      redirectTimeoutRef.current = setTimeout(() => {
         router.push(route);
       }, 3000);
     }
+
+    return () => {
+      if (redirectTimeoutRef.current) {
+        clearTimeout(redirectTimeoutRef.current);
+        redirectTimeoutRef.current = null;
+      }
+    };
   }, [profilenotFound, data, router]);
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimeoutRef.current) {
+        clearTimeout(redirectTimeoutRef.current);
+      }
+    };
+  }, []);
 
   if (isLoading || !profileUser) return <ProfileCardSkeleton />;
 
@@ -76,23 +88,27 @@ export default function ProfileLayout() {
       <div
         className="
         absolute inset-0 top-0 left-1/2 transform -translate-x-1/2
-        w-full h-[var(--banner-height-small)] md:h-[var(--banner-height)]
+        w-full h-(--banner-height-small) md:h-(--banner-height)
       "
       >
         <ProfileBanner
           userId={profileUser.id}
           banner={profileUser.banner}
-          editable={isOwner}
+          editable={canEdit}
         />
         <div
           className="
-          h-full w-full container mx-auto
-          flex justify-between items-end gap-10 bg-transparent
-          pb-10 z-20
+          h-full w-full container mx-auto px-4
+          flex flex-col md:gap-10 md:flex-row justify-end md:justify-between bg-transparent
+          pb-3 md:pb-10 z-20 gap-4
         "
         >
-          <ProfileHeader profileUser={profileUser} isOwner={isOwner} />
-          {!isAnonymous && isOwner && <ProfileActions isOwner={isOwner} />}
+          <ProfileHeader profileUser={profileUser} canEdit={canEdit} />
+          <ProfileActions
+            profileUser={profileUser}
+            isAnonymous={isAnonymous}
+            canEdit={canEdit}
+          />
         </div>
       </div>
     </div>

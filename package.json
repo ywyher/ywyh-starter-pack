@@ -9,7 +9,6 @@
     "lint": "biome check . --max-diagnostics=1000",
     "lint:fix": "biome check . --write --max-diagnostics=1000",
     "prepare": "husky",
-
     "generate": "bunx drizzle-kit generate",
     "production:migrate": "NODE_ENV=production bunx drizzle-kit migrate",
     "migrate": "bunx drizzle-kit migrate",
@@ -40,7 +39,10 @@
     "@t3-oss/env-nextjs": "^0.13.11",
     "@tanstack/react-query": "^5.100.9",
     "@tanstack/react-query-devtools": "^5.100.9",
+    "@tanstack/react-table": "^8.21.3",
+    "@uidotdev/usehooks": "^2.4.1",
     "better-auth": "^1.6.9",
+    "chrono-node": "^2.9.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

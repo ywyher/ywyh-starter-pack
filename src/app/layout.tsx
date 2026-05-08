@@ -51,7 +51,7 @@ export default function RootLayout({
               disableTransitionOnChange
             >
               <Header />
-              <main className="container mx-auto">{children}</main>
+              <main className="container mx-auto px-4 md:p-0">{children}</main>
               <Toaster theme="dark" />
             </ThemeProvider>
           </NuqsAdapter>

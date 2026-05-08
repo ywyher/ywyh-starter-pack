@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Fingerprint } from "lucide-react";
 import { useState } from "react";
 import AnonymousLinkAccountAlert from "@/components/auth/anonymous-link-account-alert";
 import Check from "@/components/auth/check";
@@ -35,9 +35,17 @@ export default function Auth({ user, trigger = true }: AuthProps) {
   return (
     <DialogWrapper
       title="Authentication"
+      headerClassName="text-start"
       open={open}
       setOpen={setOpen}
-      trigger={trigger && <Button variant="outline">Auth</Button>}
+      trigger={
+        trigger && (
+          <Button variant="outline" className="flex items-center">
+            <Fingerprint className="text-destructive" /> Auth
+          </Button>
+        )
+      }
+      noDrawer
     >
       {(port === "register" || port === "login") && (
         <Button
@@ -59,15 +67,16 @@ export default function Auth({ user, trigger = true }: AuthProps) {
         <Login
           setPort={setPort}
           identifierValue={identifierValue}
-          setOpen={setOpen}
           identifier={identifier as AuthIdentifier}
+          setOpen={setOpen}
           setPassword={setPassword}
         />
       )}
       {port === "register" && (
         <Register
           setPort={setPort}
-          email={identifierValue}
+          identifierValue={identifierValue}
+          identifier={identifier as AuthIdentifier}
           setPassword={setPassword}
           setOpen={setOpen}
         />

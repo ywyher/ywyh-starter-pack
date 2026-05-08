@@ -36,6 +36,7 @@ async function seed() {
       emailVerified: true,
       name: username,
       isAnonymous: false,
+      role: "admin",
       createdAt: new Date(),
       updatedAt: new Date(),
     });
