@@ -16,8 +16,8 @@
     "production:push": "NODE_ENV=production bunx drizzle-kit push",
     "push": "bunx drizzle-kit push",
     "production:studio": "NODE_ENV=production bunx drizzle-kit studio",
-    "seed:build": "bun build ./src/scripts/seed.ts --outdir ./dist --target bun",
-    "seed": "bun ./src/scripts/seed.ts",
+    "seed:build": "bun build ./src/lib/db/seed.ts --outdir ./dist --target bun",
+    "seed": "bun ./src/lib/db/seed.ts",
     "studio": "bunx drizzle-kit studio"
   },
   "dependencies": {
