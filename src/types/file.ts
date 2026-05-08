@@ -20,7 +20,7 @@ export interface MultipleUploadResult {
 }
 
 export interface UploadOptions {
-  acceptedTypes?: ("images" | "videos" | "documents" | "audio" | 'all')[];
+  acceptedTypes?: ("images" | "videos" | "documents" | "audio" | "all")[];
   maxSize?: number;
   maxRetries?: number;
   concurrent?: boolean;

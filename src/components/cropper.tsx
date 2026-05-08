@@ -1,26 +1,26 @@
-'use client'
+"use client";
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { 
-  ArrowDown, 
-  ArrowLeft, 
-  ArrowRight, 
-  ArrowUp, 
-  RotateCcw, 
-  RotateCw, 
-  ZoomIn, 
-  ZoomOut 
+import {
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUp,
+  RotateCcw,
+  RotateCw,
+  ZoomIn,
+  ZoomOut,
 } from "lucide-react";
 import { useCallback, useRef } from "react";
-import { 
-  Cropper as ReactCropper, 
+import {
   CircleStencil,
+  type CropperRef,
+  ImageRestriction,
+  Cropper as ReactCropper,
   RectangleStencil,
-  CropperRef, 
-  ImageRestriction 
-} from 'react-advanced-cropper';
-import 'react-advanced-cropper/dist/style.css';
+} from "react-advanced-cropper";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import "react-advanced-cropper/dist/style.css";
 
 type CropperProps = {
   image: string;
@@ -28,40 +28,40 @@ type CropperProps = {
   onCancel: () => void;
   className?: string;
   quality?: number;
-  outputFormat?: 'image/jpeg' | 'image/png' | 'image/webp';
-  cropType?: 'profile' | 'banner';
-}
+  outputFormat?: "image/jpeg" | "image/png" | "image/webp";
+  cropType?: "profile" | "banner";
+};
 
 const MOVEMENT_STEP = 50;
 const ZOOM_FACTOR = 1.5;
 const ZOOM_OUT_FACTOR = 0.5;
 const ROTATION_ANGLE = 90;
 const DEFAULT_QUALITY = 0.8;
-const OUTPUT_FILENAME = 'cropped-image';
+const OUTPUT_FILENAME = "cropped-image";
 
 // Banner aspect ratio (e.g., 16:9 or 3:1 for wide banners)
 const BANNER_ASPECT_RATIO = 48 / 9;
 
 const PFP_ASPECT_RATIO = 1 / 1;
 
-export default function Cropper({ 
+export default function Cropper({
   image,
   onCrop,
   onCancel,
   className = "",
   quality = DEFAULT_QUALITY,
-  outputFormat = 'image/png',
-  cropType = 'profile'
+  outputFormat = "image/png",
+  cropType = "profile",
 }: CropperProps) {
   const cropperRef = useRef<CropperRef>(null);
-  
+
   const handleCrop = useCallback(async () => {
     const cropper = cropperRef.current;
     if (!cropper) return;
-    
+
     const canvas = cropper.getCanvas();
     if (!canvas) return;
-    
+
     canvas.toBlob(
       (blob) => {
         if (!blob) {
@@ -69,16 +69,16 @@ export default function Cropper({
           return;
         }
 
-        const extension = outputFormat.split('/')[1];
+        const extension = outputFormat.split("/")[1];
         const file = new File([blob], `${OUTPUT_FILENAME}.${extension}`, {
           type: outputFormat,
-          lastModified: Date.now()
+          lastModified: Date.now(),
         });
-        
+
         onCrop(file);
-      }, 
-      outputFormat, 
-      quality
+      },
+      outputFormat,
+      quality,
     );
   }, [onCrop, outputFormat, quality]);
 
@@ -98,76 +98,77 @@ export default function Cropper({
     {
       icon: RotateCcw,
       action: () => handleRotate(-ROTATION_ANGLE),
-      label: "Rotate counterclockwise"
+      label: "Rotate counterclockwise",
     },
     {
       icon: RotateCw,
       action: () => handleRotate(ROTATION_ANGLE),
-      label: "Rotate clockwise"
+      label: "Rotate clockwise",
     },
     {
       icon: ZoomIn,
       action: () => handleZoom(ZOOM_FACTOR),
-      label: "Zoom in"
+      label: "Zoom in",
     },
     {
       icon: ZoomOut,
       action: () => handleZoom(ZOOM_OUT_FACTOR),
-      label: "Zoom out"
+      label: "Zoom out",
     },
     {
       icon: ArrowLeft,
       action: () => handleMove(-MOVEMENT_STEP, 0),
-      label: "Move left"
+      label: "Move left",
     },
     {
       icon: ArrowRight,
       action: () => handleMove(MOVEMENT_STEP, 0),
-      label: "Move right"
+      label: "Move right",
     },
     {
       icon: ArrowUp,
       action: () => handleMove(0, -MOVEMENT_STEP),
-      label: "Move up"
+      label: "Move up",
     },
     {
       icon: ArrowDown,
       action: () => handleMove(0, MOVEMENT_STEP),
-      label: "Move down"
-    }
+      label: "Move down",
+    },
   ];
 
   const getStencilProps = () => {
-    if (cropType === 'banner') {
+    if (cropType === "banner") {
       return {
         aspectRatio: {
           minimum: BANNER_ASPECT_RATIO,
-          maximum: BANNER_ASPECT_RATIO
+          maximum: BANNER_ASPECT_RATIO,
         },
-        resizable: false
+        resizable: false,
       };
     } else {
       // circular
       return {
         aspectRatio: {
           minimum: PFP_ASPECT_RATIO,
-          maximum: PFP_ASPECT_RATIO
-        }
+          maximum: PFP_ASPECT_RATIO,
+        },
       };
     }
   };
 
-  const StencilComponent = cropType === 'banner' ? RectangleStencil : CircleStencil;
-  
+  const StencilComponent =
+    cropType === "banner" ? RectangleStencil : CircleStencil;
+
   return (
-    <div className={cn(
-      "w-full space-y-4 max-w-full overflow-hidden",
-      className
-    )}>
+    <div
+      className={cn("w-full space-y-4 max-w-full overflow-hidden", className)}
+    >
       <div className="flex flex-row gap-2 flex-wrap">
         {controls.map(({ icon: Icon, action, label }, index) => (
           <Button
-            key={index}
+            // biome-ignore lint/suspicious/noArrayIndexKey: shut up
+            key={`${label}-${index}`}
             variant="outline"
             size="sm"
             onClick={action}
@@ -178,33 +179,30 @@ export default function Cropper({
           </Button>
         ))}
       </div>
-      
-      <div className={cn(
-        "w-full max-w-full overflow-hidden rounded-lg border",
-        cropType === 'banner' ? "h-[250px] sm:h-[300px]" : "h-[300px] sm:h-[350px]"
-      )}>
+
+      <div
+        className={cn(
+          "w-full max-w-full overflow-hidden rounded-lg border",
+          cropType === "banner"
+            ? "h-[250px] sm:h-[300px]"
+            : "h-[300px] sm:h-[350px]",
+        )}
+      >
         <ReactCropper
           src={image}
-          ref={cropperRef}            
+          ref={cropperRef}
           className="cropper w-full h-full max-w-full"
           stencilComponent={StencilComponent}
           stencilProps={getStencilProps()}
           imageRestriction={ImageRestriction.stencil}
         />
       </div>
-      
+
       <div className="flex justify-start md:justify-end gap-2">
-        <Button
-          variant="outline"
-          onClick={onCancel}
-        >
+        <Button variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button
-          onClick={handleCrop}  
-        >
-          Crop
-        </Button>
+        <Button onClick={handleCrop}>Crop</Button>
       </div>
     </div>
   );

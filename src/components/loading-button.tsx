@@ -1,6 +1,7 @@
-import React, { MouseEventHandler } from "react";
-import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import type React from "react";
+import type { MouseEventHandler } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function LoadingButton({
   isLoading,
@@ -10,7 +11,7 @@ export default function LoadingButton({
   children,
   disabled,
   className,
-  type = 'submit',
+  type = "submit",
 }: {
   isLoading: boolean;
   size?: "default" | "sm" | "lg" | "icon";
@@ -19,7 +20,7 @@ export default function LoadingButton({
   children: React.ReactNode;
   disabled?: boolean;
   className?: string;
-  type?: 'submit' | 'button'
+  type?: "submit" | "button";
 }) {
   return (
     <Button
@@ -36,9 +37,7 @@ export default function LoadingButton({
           {children}
         </>
       ) : (
-        <>
-          {children}
-        </>
+        children
       )}
     </Button>
   );

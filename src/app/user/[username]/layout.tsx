@@ -1,7 +1,7 @@
+import type { Metadata } from "next";
 import AnonAlert from "@/app/user/[username]/components/anon-alert";
-import ProfileTabs from "@/app/user/[username]/components/tabs/tabs";
 import ProfileLayout from "@/app/user/[username]/components/profile/layout";
-import { Metadata } from "next";
+import ProfileTabs from "@/app/user/[username]/components/tabs/tabs";
 
 export const metadata: Metadata = {
   title: "Profile",

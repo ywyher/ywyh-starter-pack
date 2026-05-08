@@ -1,20 +1,30 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 import { useDebounce } from "use-debounce";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
-interface ColorInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
+interface ColorInputProps
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    "onChange" | "value"
+  > {
   value?: string;
   onChange?: (value: string) => void;
 }
 
-export const ColorInput = ({ value = "#FFFFFF", onChange, className, ...props }: ColorInputProps) => {
+export const ColorInput = ({
+  value = "#FFFFFF",
+  onChange,
+  className,
+  ...props
+}: ColorInputProps) => {
   const [localValue, setLocalValue] = useState(value);
   const [debouncedColor] = useDebounce(localValue, 500);
   const fromUserInteraction = useRef(false);
@@ -55,13 +65,12 @@ export const ColorInput = ({ value = "#FFFFFF", onChange, className, ...props }:
     }
   };
 
-
   return (
     <div className="flex items-center gap-2 w-full">
       <Popover>
         <PopoverTrigger>
-          <div 
-            className="w-8 h-8 rounded-md cursor-pointer" 
+          <div
+            className="w-8 h-8 rounded-md cursor-pointer"
             style={{ backgroundColor: localValue }}
           ></div>
         </PopoverTrigger>

@@ -2,16 +2,20 @@ import ProfileTabsLinks from "@/app/user/[username]/components/tabs/links";
 
 export default function ProfileTabs() {
   return (
-    <div className="
+    <div
+      className="
       w-screen relative left-1/2 -translate-x-1/2
       bg-secondary
-    ">
-      <div className="
+    "
+    >
+      <div
+        className="
         flex flex-row flex-wrap justify-center gap-2
         h-fit px-4
-      ">
+      "
+      >
         <ProfileTabsLinks />
       </div>
     </div>
-  )
+  );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Switch } from "@/components/ui/switch";
 
 interface SwitchInputProps {
@@ -11,18 +10,8 @@ interface SwitchInputProps {
   name?: string;
 }
 
-export function SwitchInput({
-  value,
-  onChange,
-  ...props
-}: SwitchInputProps) {
-  return (
-    <Switch
-      checked={value}
-      onCheckedChange={onChange}
-      {...props}
-    />
-  );
+export function SwitchInput({ value, onChange, ...props }: SwitchInputProps) {
+  return <Switch checked={value} onCheckedChange={onChange} {...props} />;
 }
 
 SwitchInput.displayName = "SwitchInput";

@@ -1,18 +1,18 @@
 "use client";
 import React from "react";
-import { UseFormReturn, FieldPath, FieldValues } from "react-hook-form";
+import type { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
 import {
-  FormField as ShadcnFormField,
+  FormControl,
+  FormDescription,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
-  FormDescription,
+  FormField as ShadcnFormField,
 } from "@/components/ui/form";
 
 interface FormFieldProps<
   TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > {
   form: UseFormReturn<TFieldValues>;
   name: TName;
@@ -29,7 +29,7 @@ interface FormFieldProps<
 
 export function FormField<
   TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
   form,
   name,
@@ -72,40 +72,47 @@ export function FormField<
       render={({ field }) => (
         <FormItem className={`w-full ${containerClassName || ""}`}>
           <div className={getLayoutClasses()}>
-            <div className={`${getHeaderClasses()} ${headerClassName || ""} flex flex-col gap-1`}>
+            <div
+              className={`${getHeaderClasses()} ${headerClassName || ""} flex flex-col gap-1`}
+            >
               {label && (
                 <FormLabel>
                   {label}{" "}
                   {optional && (
-                    <span className="text-sm text-muted-foreground">(Optional)</span>
+                    <span className="text-sm text-muted-foreground">
+                      (Optional)
+                    </span>
                   )}
                 </FormLabel>
               )}
-              {description && (
-                <FormDescription>{description}</FormDescription>
-              )}
+              {description && <FormDescription>{description}</FormDescription>}
             </div>
             <FormControl className={getControlClasses()}>
               {React.isValidElement(children)
-                ? React.cloneElement(children as React.ReactElement, {
-                    disabled,
-                    ...field,
-                    // Handle both form onChange and custom onValueChange
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    onChange: (value: any) => {
-                      // Always update the form
-                      field.onChange(value);
-                      
-                      // Call custom onValueChange if it exists
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      const childElement = children as React.ReactElement<{ onChange?: (value: any) => void }>;
-                      const originalOnChange = childElement.props.onChange;
-                      if (originalOnChange) {
-                        originalOnChange(value);
-                      }
-                    },
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  } as any)
+                ? React.cloneElement(
+                    children as React.ReactElement,
+                    {
+                      disabled,
+                      ...field,
+                      // Handle both form onChange and custom onValueChange
+                      // biome-ignore lint/suspicious/noExplicitAny: temporary
+                      onChange: (value: any) => {
+                        // Always update the form
+                        field.onChange(value);
+
+                        // Call custom onValueChange if it exists
+                        const childElement = children as React.ReactElement<{
+                          // biome-ignore lint/suspicious/noExplicitAny: temporary
+                          onChange?: (value: any) => void;
+                        }>;
+                        const originalOnChange = childElement.props.onChange;
+                        if (originalOnChange) {
+                          originalOnChange(value);
+                        }
+                      },
+                      // biome-ignore lint/suspicious/noExplicitAny: temporary
+                    } as any,
+                  )
                 : children}
             </FormControl>
           </div>

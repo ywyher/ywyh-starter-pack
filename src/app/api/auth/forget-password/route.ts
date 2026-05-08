@@ -1,7 +1,7 @@
+import { type NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 import { ForgetPassowrdEmailTemplate } from "@/components/templates/forget-password.template";
 import { env } from "@/lib/env/server";
-import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,8 +18,8 @@ export async function POST(req: NextRequest) {
     if (!env.RESEND_API_KEY) {
       console.warn("RESEND_API_KEY not provided - email sending disabled");
       return NextResponse.json(
-        { error: "Email service not configured" }, 
-        { status: 503 }
+        { error: "Email service not configured" },
+        { status: 503 },
       );
     }
 

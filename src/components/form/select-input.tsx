@@ -1,7 +1,12 @@
 "use client";
 
-import React from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface SelectOption {
   value: string;
@@ -28,8 +33,8 @@ export function SelectInput({
   ...props
 }: SelectInputProps) {
   return (
-    <Select 
-      onValueChange={onChange} 
+    <Select
+      onValueChange={onChange}
       value={value}
       disabled={disabled}
       {...props}

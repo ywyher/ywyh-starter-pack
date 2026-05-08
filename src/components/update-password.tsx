@@ -1,21 +1,27 @@
-"use client"
+"use client";
 
-import { z } from "zod"
-import { FieldErrors, useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Form } from "@/components/ui/form"
-import { useState } from "react"
-import LoadingButton from "@/components/loading-button"
-import { toast } from "sonner"
-import { authClient } from "@/lib/auth-client"
-import { PasswordInput } from "@/components/form/password-input"
-import { useIsSmall } from "@/lib/hooks/use-media-query"
-import { passwordSchema } from "@/types/auth"
-import { FormField } from "@/components/form/form-field"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ShieldCheckIcon } from "lucide-react"
-import { Skeleton } from "@/components/ui/skeleton"
-import { cn } from "@/lib/utils"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ShieldCheckIcon } from "lucide-react";
+import { useState } from "react";
+import { type FieldErrors, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import { FormField } from "@/components/form/form-field";
+import { PasswordInput } from "@/components/form/password-input";
+import LoadingButton from "@/components/loading-button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
+import { Skeleton } from "@/components/ui/skeleton";
+import { authClient } from "@/lib/auth-client";
+import { useIsSmall } from "@/lib/hooks/use-media-query";
+import { cn } from "@/lib/utils";
+import { passwordSchema } from "@/types/auth";
 
 const formSchema = z
   .object({
@@ -26,15 +32,15 @@ const formSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
-  })
+  });
 
-type ResetPasswordValues = z.infer<typeof formSchema>
+type ResetPasswordValues = z.infer<typeof formSchema>;
 
-type UpdatePasswordProps = { className?: string, onSuccess?: () => void }
+type UpdatePasswordProps = { className?: string; onSuccess?: () => void };
 
 export function UpdatePassword({ className, onSuccess }: UpdatePasswordProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const isSmall = useIsSmall()
+  const [isLoading, setIsLoading] = useState(false);
+  const isSmall = useIsSmall();
 
   const form = useForm<ResetPasswordValues>({
     resolver: zodResolver(formSchema),
@@ -43,94 +49,86 @@ export function UpdatePassword({ className, onSuccess }: UpdatePasswordProps) {
       password: "",
       confirmPassword: "",
     },
-  })
+  });
 
   const onSubmit = async (data: ResetPasswordValues) => {
-    setIsLoading(true)
+    setIsLoading(true);
 
-    const { error } =  await authClient.changePassword({
-        newPassword: data.password,
-        currentPassword: data.oldPassword,
-        revokeOtherSessions: true,
+    const { error } = await authClient.changePassword({
+      newPassword: data.password,
+      currentPassword: data.oldPassword,
+      revokeOtherSessions: true,
     });
 
-    if(error) {
-      toast.error(error.message)
-      setIsLoading(false)
+    if (error) {
+      toast.error(error.message);
+      setIsLoading(false);
       return;
     }
-    
-    setIsLoading(false)
-    toast.success("Password updated successfully")
+
+    setIsLoading(false);
+    toast.success("Password updated successfully");
     form.reset({
       oldPassword: "",
       password: "",
       confirmPassword: "",
-    })
-    if(onSuccess) onSuccess()
-  }
+    });
+    if (onSuccess) onSuccess();
+  };
 
   const onError = (errors: FieldErrors<ResetPasswordValues>) => {
-      const position = isSmall ? "top-center" : "bottom-right"
-      const firstError = Object.values(errors)[0];
+    const position = isSmall ? "top-center" : "bottom-right";
+    const firstError = Object.values(errors)[0];
 
-      if (firstError?.message) {
-        toast.error(firstError.message, { position });
-      }
-  }
+    if (firstError?.message) {
+      toast.error(firstError.message, { position });
+    }
+  };
 
   return (
-    <Card className={cn(
-      "bg-transparent",
-      className
-    )}>
+    <Card className={cn("bg-transparent", className)}>
       <CardHeader className="p-0">
         <CardTitle className="flex items-center gap-2">
           <ShieldCheckIcon className="h-5 w-5 text-primary" />
           Password Security
         </CardTitle>
-        <CardDescription>Update your password to keep your account secure</CardDescription>
+        <CardDescription>
+          Update your password to keep your account secure
+        </CardDescription>
       </CardHeader>
       <CardContent className="p-0">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit, onError)} className="flex flex-col gap-6">
-            <FormField
-                form={form}
-                label="Current Password"
-                name="oldPassword"
-            >
-                <PasswordInput 
-                  placeholder="Enter your current password"
-                />
-            </FormField>
-            
-            <FormField
-                form={form}
-                label="New Password"
-                name="password"
-            >
-                <PasswordInput 
-                  placeholder="Enter your new password"
-                />
-            </FormField>
-            <FormField
-                form={form}
-                label="Confirm New Password"
-                name="confirmPassword"
-            >
-                <PasswordInput 
-                  placeholder="Confirm your new password"
-                />
+          <form
+            onSubmit={form.handleSubmit(onSubmit, onError)}
+            className="flex flex-col gap-6"
+          >
+            <FormField form={form} label="Current Password" name="oldPassword">
+              <PasswordInput placeholder="Enter your current password" />
             </FormField>
 
-            <LoadingButton isLoading={isLoading} variant="outline" className="w-full">
+            <FormField form={form} label="New Password" name="password">
+              <PasswordInput placeholder="Enter your new password" />
+            </FormField>
+            <FormField
+              form={form}
+              label="Confirm New Password"
+              name="confirmPassword"
+            >
+              <PasswordInput placeholder="Confirm your new password" />
+            </FormField>
+
+            <LoadingButton
+              isLoading={isLoading}
+              variant="outline"
+              className="w-full"
+            >
               Update Password
             </LoadingButton>
           </form>
         </Form>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 export function UpdatePasswordSkeleton() {
@@ -160,5 +158,5 @@ export function UpdatePasswordSkeleton() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

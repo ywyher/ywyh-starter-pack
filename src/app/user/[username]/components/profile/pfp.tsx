@@ -1,18 +1,22 @@
-import Pfp from "@/components/pfp";
+import UploadOverlay from "@/app/user/[username]/components/profile/upload-overlay";
 import Cropper from "@/components/cropper";
 import DialogWrapper from "@/components/dialog-wrapper";
-import UploadOverlay from "@/app/user/[username]/components/profile/upload-overlay";
+import Pfp from "@/components/pfp";
+import type { User } from "@/lib/db/schema";
 import useProfileFiles from "@/lib/hooks/use-profile-files";
-import { User } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
 
 type UserPfpProps = {
-  userId: User['id']
-  image: User['image']
-  editable?: boolean
-}
+  userId: User["id"];
+  image: User["image"];
+  editable?: boolean;
+};
 
-export default function ProfilePfp({ userId, image, editable = false }: UserPfpProps) {
+export default function ProfilePfp({
+  userId,
+  image,
+  editable = false,
+}: UserPfpProps) {
   const {
     fileInputRef,
     previewUrl,
@@ -21,43 +25,45 @@ export default function ProfilePfp({ userId, image, editable = false }: UserPfpP
     handleFileChange,
     handleImage,
     handleDialogClose,
-    triggerFileInput
-  } = useProfileFiles({ 
+    triggerFileInput,
+  } = useProfileFiles({
     userId,
     currentFile: image,
-    field: 'image',
-    successMessage: 'Lookin good :)'
+    field: "image",
+    successMessage: "Lookin good :)",
   });
 
   return (
     <>
-      <div 
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: shut up */}
+      <div
         className={cn(
           "relative w-full h-full group",
           "w-50 h-50 z-20",
           editable && "cursor-pointer",
-          isUploading && "cursor-wait"
+          isUploading && "cursor-wait",
         )}
         onClick={editable ? triggerFileInput : undefined}
+        onKeyUp={editable ? triggerFileInput : undefined}
       >
-        <input 
-          type="file" 
+        <input
+          type="file"
           ref={fileInputRef}
           className="hidden"
           accept="image/*"
           onChange={handleFileChange}
           disabled={isUploading}
         />
-        
-        <Pfp 
+
+        <Pfp
           image={image}
           className={cn(
             "object-cover rounded-sm border-2 border-primary/20",
             "w-full h-full transition-opacity duration-200",
-            isUploading && "opacity-75"
+            isUploading && "opacity-75",
           )}
         />
-        
+
         <UploadOverlay isUploading={isUploading} editable={editable} />
       </div>
 
@@ -71,7 +77,7 @@ export default function ProfilePfp({ userId, image, editable = false }: UserPfpP
         handleOnly={true}
       >
         {previewUrl && (
-          <Cropper 
+          <Cropper
             image={previewUrl}
             onCrop={handleImage}
             onCancel={handleDialogClose}

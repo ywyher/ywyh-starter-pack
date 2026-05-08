@@ -1,28 +1,27 @@
-"use client"
+"use client";
 
-import Logo from '@/components/header/logo';
-import Auth from '@/components/auth/auth';
-import React from 'react';
-import ThemeToggle from '@/components/theme-toggle';
-import HeaderLinks from '@/components/header/links';
-import { cn } from '@/lib/utils';
-import { Menu } from '@/components/header/menu';
-import { useSession } from '@/lib/queries/user';
+import Auth from "@/components/auth/auth";
+import HeaderLinks from "@/components/header/links";
+import Logo from "@/components/header/logo";
+import { Menu } from "@/components/header/menu";
+import ThemeToggle from "@/components/theme-toggle";
+import { useSession } from "@/lib/queries/user";
+import { cn } from "@/lib/utils";
 
 export default function Header() {
-  const { data: user } = useSession()
+  const { data: user } = useSession();
 
   return (
-    <header 
+    <header
       className="
         sticky top-0 z-50 w-full
         border-b-1
       "
     >
-      <div 
+      <div
         className={cn(
           "absolute inset-0 transition-all duration-300 ease-in-out",
-          "bg-primary-foreground/40 backdrop-blur-xs" 
+          "bg-primary-foreground/40 backdrop-blur-xs",
         )}
       />
       <div
@@ -31,7 +30,7 @@ export default function Header() {
           "flex flex-row items-center justify-between py-3",
         )}
       >
-        <div className='flex flex-row gap-3 items-center'>
+        <div className="flex flex-row gap-3 items-center">
           <Logo />
           <HeaderLinks />
         </div>

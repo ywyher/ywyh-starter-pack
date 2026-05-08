@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
 
 export function PasswordInput({ ...props }) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  
+
   return (
     <div className="relative w-full">
       <Input

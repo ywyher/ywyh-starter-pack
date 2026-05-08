@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Slider } from "@/components/ui/slider";
 
 interface SliderInputProps {
@@ -12,7 +12,7 @@ interface SliderInputProps {
   onBlur?: (value: number) => void;
   disabled?: boolean;
   showValue?: boolean;
-  unit?: 'px' | 'percentage';
+  unit?: "px" | "percentage";
 }
 
 export function SliderInput({
@@ -29,16 +29,16 @@ export function SliderInput({
   ...props
 }: SliderInputProps) {
   const [internalValue, setInternalValue] = useState(propValue);
-  
+
   useEffect(() => {
     setInternalValue(propValue);
   }, [propValue]);
 
   const formattedValue = () => {
-    if (unit === 'percentage') {
+    if (unit === "percentage") {
       return `${Math.round(internalValue * 100)}%`;
     }
-    return `${internalValue}${unit || ''}`;
+    return `${internalValue}${unit || ""}`;
   };
 
   return (

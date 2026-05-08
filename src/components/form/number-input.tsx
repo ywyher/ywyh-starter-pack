@@ -1,7 +1,11 @@
-import React from "react";
+import type React from "react";
 import { Input } from "@/components/ui/input";
 
-interface NumberInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'onBlur'> {
+interface NumberInputProps
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    "onChange" | "value" | "onBlur"
+  > {
   placeholder?: string;
   value?: number | string;
   onChange?: (value: number | null) => void;
@@ -9,26 +13,26 @@ interface NumberInputProps extends Omit<React.InputHTMLAttributes<HTMLInputEleme
   max?: number;
 }
 
-export function NumberInput({ 
-  placeholder = "", 
-  onChange, 
+export function NumberInput({
+  placeholder = "",
+  onChange,
   onBlur,
   value,
   max,
-  ...props 
+  ...props
 }: NumberInputProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const stringValue = e.target.value.replace(/\D/g, "") // Remove non-numeric characters
-    
+    const stringValue = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+
     const numericValue = stringValue ? Number(stringValue) : null;
-    
+
     if (max !== undefined && numericValue !== null && numericValue > max) {
       if (onChange) {
         onChange(max);
       }
       return;
     }
-    
+
     if (onChange) {
       onChange(numericValue);
     }
@@ -37,18 +41,20 @@ export function NumberInput({
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const stringValue = e.target.value.replace(/\D/g, "");
     const numericValue = stringValue ? Number(stringValue) : null;
-    
+
     // Apply max constraint on blur as well
-    const finalValue = max !== undefined && numericValue !== null && numericValue > max
-      ? max
-      : numericValue;
-    
+    const finalValue =
+      max !== undefined && numericValue !== null && numericValue > max
+        ? max
+        : numericValue;
+
     if (onBlur) {
       onBlur(finalValue);
     }
   };
 
-  const displayValue = value !== undefined && value !== null ? String(value) : "";
+  const displayValue =
+    value !== undefined && value !== null ? String(value) : "";
 
   return (
     <Input

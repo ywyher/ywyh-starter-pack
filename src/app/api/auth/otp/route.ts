@@ -1,7 +1,7 @@
-import { OTPTemplate } from "@/components/templates/otp.template";
-import { env } from "@/lib/env/server";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { OTPTemplate } from "@/components/templates/otp.template";
+import { env } from "@/lib/env/server";
 
 export async function POST(req: Request) {
   try {
@@ -11,8 +11,8 @@ export async function POST(req: Request) {
     if (!env.RESEND_API_KEY) {
       console.warn("RESEND_API_KEY not provided - email sending disabled");
       return NextResponse.json(
-        { error: "Email service not configured" }, 
-        { status: 503 }
+        { error: "Email service not configured" },
+        { status: 503 },
       );
     }
 
@@ -20,10 +20,10 @@ export async function POST(req: Request) {
     const resend = new Resend(env.RESEND_API_KEY);
 
     const { data, error } = await resend.emails.send({
-        from: `Acme <${env.RESEND_FROM_EMAIL}>`, // Use your verified domain
-        to: email,
-        subject: 'Hello world',
-        react: OTPTemplate({ firstName: 'John', otp: otp }),
+      from: `Acme <${env.RESEND_FROM_EMAIL}>`, // Use your verified domain
+      to: email,
+      subject: "Hello world",
+      react: OTPTemplate({ firstName: "John", otp: otp }),
     });
 
     if (error) {
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     return NextResponse.json(data);
   } catch (error) {
     console.error("Error:", error);
-    const msg = error instanceof Error ? error.message : "Failed to send email" 
+    const msg = error instanceof Error ? error.message : "Failed to send email";
     return NextResponse.json(
       { error: `Failed to send email: ${msg}` },
       { status: 500 },
