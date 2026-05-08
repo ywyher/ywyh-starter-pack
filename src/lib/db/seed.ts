@@ -7,7 +7,7 @@ import { account, user } from "@/lib/db/schema";
 async function seed() {
   const userId = generateId();
   const accountId = generateId();
-  const email = "admin@bettermelon.ru";
+  const email = "admin@gmail.com";
   const username = "admin";
 
   console.info(
