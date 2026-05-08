@@ -10,6 +10,7 @@ export default defineConfig({
   schema: "../database/src/schema/index.ts",
   dialect: "postgresql",
   dbCredentials: {
+    // biome-ignore lint/style/noNonNullAssertion: temporary
     url: process.env.DATABASE_URL!,
   },
   migrations: {
